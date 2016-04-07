@@ -42,7 +42,7 @@
 
   mx.cookie = function (key, value, options) {
     // Write
-    options = Object.assign({}, options);
+    options = options || {};
 
     if (arguments.length > 1) {
 
@@ -91,7 +91,10 @@
   };
 
   mx.removeCookie = function (key, options) {
-    mx.cookie(key, '', Object.assign({}, options, { expires: -1 }));
+    options = options || {};
+    options.expires = -1;
+    
+    mx.cookie(key, '', options);
     return !mx.cookie(key);
   };
 })(m);
