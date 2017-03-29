@@ -9,11 +9,11 @@
   var pluses = /\+/g;
 
   function encode(s) {
-    return encodeURIComponent(s);
+    return encodeURIComponent(s).replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
   }
 
   function decode(s) {
-    return decodeURIComponent(s);
+    return decodeURIComponent(s).replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);;
   }
 
   function stringifyCookieValue(value) {
@@ -21,16 +21,8 @@
   }
 
   function parseCookieValue(s) {
-    if (s.indexOf('"') === 0) {
-      // This is a quoted cookie as according to RFC2068, unescape...
-      s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-    }
-
     try {
-      // Replace server-side written pluses with spaces.
-      // If we can't decode the cookie, ignore it, it's unusable.
-      // If we can't parse the cookie, ignore it, it's unusable.
-      s = decodeURIComponent(s.replace(pluses, ' '));
+      s = decode(s);
       return JSON.parse(s);
     } catch (e) { }
   }
